@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface IIncome extends Document {
   user: mongoose.Types.ObjectId;
@@ -12,7 +12,12 @@ export interface IIncome extends Document {
   updatedAt: Date;
 }
 
-const IncomeSchema: Schema = new Schema(
+// Interface for the Income model with static methods
+interface IncomeModel extends Model<IIncome> {
+  // Add any static methods here if needed
+}
+
+const IncomeSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -56,4 +61,12 @@ const IncomeSchema: Schema = new Schema(
 // Create compound index for user and date for faster queries
 IncomeSchema.index({ user: 1, date: -1 });
 
-export default mongoose.models.Income || mongoose.model<IIncome>('Income', IncomeSchema);
+// Helper to safely get Income model in a way that works with Next.js hot reloading
+function getModel(): IncomeModel {
+  // Check if model already exists to prevent recompilation error
+  return (mongoose.models.Income || 
+    mongoose.model<IIncome, IncomeModel>('Income', IncomeSchema)) as IncomeModel;
+}
+
+// Export the model
+export default getModel();

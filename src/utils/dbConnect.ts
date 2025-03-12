@@ -1,41 +1,61 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGO_URI;
+// Add interface for global namespace
+declare global {
+  var mongooseConnection: {
+    isConnected?: number;
+    promise?: Promise<typeof mongoose>;
+  };
+}
 
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGO_URI environment variable');
+// Initialize global object
+if (!global.mongooseConnection) {
+  global.mongooseConnection = {};
 }
 
 /**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
+ * Connect to MongoDB database
  */
-// Initialize global mongoose if not exists
-if (!global.mongoose) {
-  global.mongoose = { conn: null, promise: null };
-}
-
-// Use the cached connection
-const cached = global.mongoose;
-
 async function dbConnect() {
-  if (cached.conn) {
-    return cached.conn;
+  const MONGODB_URI = process.env.MONGO_URI;
+
+  if (!MONGODB_URI) {
+    throw new Error('Please define the MONGO_URI environment variable');
   }
 
-  if (!cached.promise) {
+  // If the connection is already established, return the existing connection
+  if (global.mongooseConnection.isConnected === 1) {
+    return mongoose;
+  }
+
+  // If a connection is being established, wait for it to complete
+  if (global.mongooseConnection.promise) {
+    try {
+      await global.mongooseConnection.promise;
+      global.mongooseConnection.isConnected = mongoose.connections[0].readyState;
+      return mongoose;
+    } catch (error) {
+      // If connection fails, reset the promise to try again next time
+      global.mongooseConnection.promise = undefined;
+      throw error;
+    }
+  }
+
+  // No existing connection, so create a new one
+  try {
     const opts = {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
-      return mongoose;
-    });
+    global.mongooseConnection.promise = mongoose.connect(MONGODB_URI, opts);
+    await global.mongooseConnection.promise;
+    
+    global.mongooseConnection.isConnected = mongoose.connections[0].readyState;
+    return mongoose;
+  } catch (error) {
+    global.mongooseConnection.promise = undefined;
+    throw error;
   }
-
-  cached.conn = await cached.promise;
-  return cached.conn;
 }
 
 export default dbConnect;

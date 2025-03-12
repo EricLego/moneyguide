@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
@@ -10,7 +10,12 @@ export interface IUser extends Document {
   comparePassword: (candidatePassword: string) => Promise<boolean>;
 }
 
-const UserSchema: Schema = new Schema(
+// Interface for the User model with static methods
+interface UserModel extends Model<IUser> {
+  // Add any static methods here if needed
+}
+
+const UserSchema = new Schema(
   {
     email: {
       type: String,
@@ -35,7 +40,7 @@ const UserSchema: Schema = new Schema(
 );
 
 // Hash password before saving
-UserSchema.pre<IUser>('save', async function (next) {
+UserSchema.pre('save', async function(this: IUser & Document, next) {
   if (!this.isModified('password')) return next();
   
   try {
@@ -48,9 +53,16 @@ UserSchema.pre<IUser>('save', async function (next) {
 });
 
 // Method to compare passwords
-UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+UserSchema.methods.comparePassword = async function(this: IUser, candidatePassword: string): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Check if model exists before creating a new one
-export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+// Helper to safely get User model in a way that works with Next.js hot reloading
+function getModel(): UserModel {
+  // Check if model already exists to prevent recompilation error
+  return (mongoose.models.User || 
+    mongoose.model<IUser, UserModel>('User', UserSchema)) as UserModel;
+}
+
+// Export the model
+export default getModel();

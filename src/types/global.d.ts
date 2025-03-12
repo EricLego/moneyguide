@@ -1,10 +1,4 @@
-import mongoose from 'mongoose';
+// Global types for the application
 
-declare global {
-  var mongoose: {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
-  };
-}
-
+// Empty export to make TypeScript treat this as a module
 export {};
