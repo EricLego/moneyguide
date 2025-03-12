@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     // Set a timeout for database connection
     const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Database connection timeout')), 5000)
+      setTimeout(() => reject(new Error('Database connection timeout')), 10000)
     );
     
     await Promise.race([dbPromise, timeout]);
@@ -50,37 +50,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ 
         success: false, 
         message: 'Missing required fields' 
-      });
-    }
-
-    // For demonstration purposes, if MONGO_URI is not set, use demo signup
-    if (!process.env.MONGO_URI) {
-      console.log('No MongoDB URI found - using demo mode for signup');
-      
-      // Create a demo user
-      const demoUser = {
-        _id: 'demo123',
-        name,
-        email,
-      };
-      
-      const token = 'demo-token-123456789';
-      
-      // Set demo cookie
-      setCookie('token', token, { 
-        req, 
-        res, 
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/'
-      });
-      
-      return res.status(201).json({
-        success: true,
-        data: demoUser,
-        demo: true
       });
     }
 
@@ -110,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       maxAge: 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax', // Changed to lax for better compatibility
+      sameSite: 'lax', // Using lax for better compatibility
       path: '/'
     });
 

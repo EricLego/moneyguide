@@ -14,6 +14,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title = 'MoneyGuide' }) => {
   const router = useRouter();
 
   const isActive = (path: string) => router.pathname === path || router.pathname.startsWith(`${path}/`);
+  const isHome = router.pathname === '/';
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -24,11 +25,11 @@ const Layout: React.FC<LayoutProps> = ({ children, title = 'MoneyGuide' }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+      <header className={`${isHome ? 'bg-transparent' : 'bg-white'} border-b border-gray-200 sticky top-0 z-10 shadow-sm transition-all duration-300`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Link href="/" className="flex items-center text-xl font-bold text-primary hover:text-primary/90 transition-colors">
+              <Link href="/" className="flex items-center text-xl font-bold text-primary hover:text-primary-dark transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mr-2" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
                   <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 011 1v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1zm5-1a1 1 0 00-1 1v1a1 1 0 001 1h1a1 1 0 001-1v-1a1 1 0 00-1-1H9z" clipRule="evenodd" />
@@ -87,11 +88,11 @@ const Layout: React.FC<LayoutProps> = ({ children, title = 'MoneyGuide' }) => {
                     </>
                   ) : (
                     <>
-                      <Link href="/login" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/login') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:text-primary'}`}>
+                      <Link href="/login" className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive('/login') ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:text-primary'}`}>
                         Login
                       </Link>
-                      <Link href="/signup" className="btn-primary">
-                        Sign Up
+                      <Link href="/signup" className="btn-primary transition-all hover:scale-105">
+                        Sign Up Free
                       </Link>
                     </>
                   )}
@@ -108,29 +109,31 @@ const Layout: React.FC<LayoutProps> = ({ children, title = 'MoneyGuide' }) => {
         </div>
       </main>
 
-      <footer className="bg-white border-t border-gray-200 py-6 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center">
-            <div className="flex items-center mb-4 sm:mb-0">
-              <span className="text-primary font-bold text-lg mr-2">MoneyGuide</span>
-              <span className="text-gray-500 text-sm">
-                © {new Date().getFullYear()} All rights reserved
-              </span>
-            </div>
-            <div className="flex space-x-6">
-              <a href="#" className="text-gray-500 hover:text-primary">
-                Privacy
-              </a>
-              <a href="#" className="text-gray-500 hover:text-primary">
-                Terms
-              </a>
-              <a href="#" className="text-gray-500 hover:text-primary">
-                Support
-              </a>
+      {!isHome && (
+        <footer className="bg-white border-t border-gray-200 py-6 mt-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row justify-between items-center">
+              <div className="flex items-center mb-4 sm:mb-0">
+                <span className="text-primary font-bold text-lg mr-2">MoneyGuide</span>
+                <span className="text-gray-500 text-sm">
+                  © {new Date().getFullYear()} All rights reserved
+                </span>
+              </div>
+              <div className="flex space-x-6">
+                <Link href="/privacy" className="text-gray-500 hover:text-primary transition-colors">
+                  Privacy
+                </Link>
+                <Link href="/terms" className="text-gray-500 hover:text-primary transition-colors">
+                  Terms
+                </Link>
+                <Link href="/support" className="text-gray-500 hover:text-primary transition-colors">
+                  Support
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   );
 };

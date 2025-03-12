@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     // Set a timeout for database connection
     const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Database connection timeout')), 5000)
+      setTimeout(() => reject(new Error('Database connection timeout')), 10000)
     );
     
     await Promise.race([dbPromise, timeout]);
@@ -51,44 +51,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         success: false, 
         message: 'Email and password are required' 
       });
-    }
-
-    // For demonstration purposes, if MONGO_URI is not set, use demo user
-    if (!process.env.MONGO_URI) {
-      console.log('No MongoDB URI found - using demo mode');
-      
-      // Check if this is the demo user
-      if (email === 'demo@example.com' && password === 'password123') {
-        const demoUser = {
-          _id: 'demo123',
-          name: 'Demo User',
-          email: 'demo@example.com',
-        };
-        
-        const token = 'demo-token-123456789';
-        
-        // Set demo cookie
-        setCookie('token', token, { 
-          req, 
-          res, 
-          maxAge: 60 * 60 * 24 * 7, // 1 week
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'strict',
-          path: '/'
-        });
-        
-        return res.status(200).json({
-          success: true,
-          data: demoUser,
-          demo: true
-        });
-      } else {
-        return res.status(401).json({ 
-          success: false, 
-          message: 'For demo, use email: demo@example.com and password: password123' 
-        });
-      }
     }
 
     // Find user in MongoDB
@@ -119,7 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       maxAge: 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax', // Changed to lax for better compatibility
+      sameSite: 'lax', // Using lax for better compatibility
       path: '/'
     });
 

@@ -18,21 +18,27 @@
   h3 {
     @apply text-lg font-medium text-gray-800;
   }
+
+  /* Smooth scrolling for page */
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @layer components {
   .btn-primary {
     @apply bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded transition-all 
-           shadow-sm hover:shadow transform hover:-translate-y-0.5;
+           shadow-sm hover:shadow transform hover:-translate-y-0.5 focus:ring-2 focus:ring-primary/50 focus:outline-none;
   }
   
   .btn-secondary {
     @apply bg-secondary hover:bg-secondary/90 text-white font-medium py-2 px-4 rounded transition-all
-           shadow-sm hover:shadow transform hover:-translate-y-0.5;
+           shadow-sm hover:shadow transform hover:-translate-y-0.5 focus:ring-2 focus:ring-secondary/50 focus:outline-none;
   }
   
   .btn-outline {
-    @apply border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-4 rounded transition-colors;
+    @apply border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-2 px-4 rounded transition-colors
+           focus:ring-2 focus:ring-gray-300 focus:outline-none;
   }
   
   .input-field {
@@ -41,7 +47,7 @@
   }
   
   .card {
-    @apply bg-card rounded-lg shadow-md p-8 mb-8 border border-gray-100;
+    @apply bg-card rounded-lg shadow-md p-8 mb-8 border border-gray-100 transition-all;
   }
   
   .stat-card {
@@ -58,5 +64,10 @@
   
   .section-spacing {
     @apply my-10;
+  }
+
+  /* Hover animation for feature cards */
+  .feature-card {
+    @apply transform transition-transform duration-300 hover:-translate-y-2;
   }
 }

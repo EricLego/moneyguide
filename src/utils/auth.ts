@@ -2,8 +2,11 @@ import jwt from 'jsonwebtoken';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { IUser } from '../models/User';
 
-// Use a default secret for development and demo purposes
-const JWT_SECRET = process.env.JWT_SECRET || 'demo-development-secret-key-for-jwt-signing';
+// Get JWT secret from environment or throw an error
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('JWT_SECRET environment variable is not set!');
+}
 
 export interface UserToken {
   id: string;
@@ -16,19 +19,19 @@ export function generateToken(user: IUser | { _id: string; email: string }): str
     email: user.email,
   };
 
+  if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is not defined');
+  }
+
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: '30d', // Extended validity for demo
+    expiresIn: '7d',
   });
 }
 
 export function verifyToken(token: string): UserToken | null {
   try {
-    // Handle demo token
-    if (token === 'demo-token-123456789') {
-      return {
-        id: 'demo123',
-        email: 'demo@example.com'
-      };
+    if (!JWT_SECRET) {
+      throw new Error('JWT_SECRET is not defined');
     }
     
     return jwt.verify(token, JWT_SECRET) as UserToken;
@@ -72,15 +75,6 @@ export function authenticateUser(
           message: 'Authentication required',
           details: 'No token found in request'
         });
-      }
-
-      // Handle demo token
-      if (token === 'demo-token-123456789') {
-        req.user = {
-          id: 'demo123',
-          email: 'demo@example.com'
-        };
-        return handler(req, res);
       }
 
       const decodedToken = verifyToken(token);

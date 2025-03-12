@@ -42,20 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ success: false, message: 'Authentication required' });
     }
 
-    // Demo mode support
-    if (token === 'demo-token-123456789' || !process.env.MONGO_URI) {
-      console.log('Using demo user for /me endpoint');
-      return res.status(200).json({
-        success: true,
-        data: {
-          id: 'demo123',
-          name: 'Demo User',
-          email: 'demo@example.com',
-        },
-        demo: true
-      });
-    }
-
     // Verify token
     const decodedToken = verifyToken(token.toString());
     
@@ -68,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     // Set a timeout for database connection
     const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Database connection timeout')), 5000)
+      setTimeout(() => reject(new Error('Database connection timeout')), 10000)
     );
     
     await Promise.race([dbPromise, timeout]);

@@ -14,7 +14,6 @@ interface AuthContextType {
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   error: string | null;
-  isDemo: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,7 +22,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isDemo, setIsDemo] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -41,12 +39,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           
           if (data.success) {
             setUser(data.data);
-            
-            // Check if this is demo mode
-            if (data.demo) {
-              console.log('Running in demo mode');
-              setIsDemo(true);
-            }
           }
         } else {
           console.log('Auth check failed:', response.status);
@@ -89,13 +81,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.log('Login successful:', data);
 
       setUser(data.data);
-      
-      // Check if this is demo mode
-      if (data.demo) {
-        console.log('Running in demo mode');
-        setIsDemo(true);
-      }
-      
       router.push('/dashboard');
     } catch (error: any) {
       console.error('Login error:', error);
@@ -129,13 +114,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.log('Signup successful:', data);
 
       setUser(data.data);
-      
-      // Check if this is demo mode
-      if (data.demo) {
-        console.log('Running in demo mode');
-        setIsDemo(true);
-      }
-      
       router.push('/dashboard');
     } catch (error: any) {
       console.error('Signup error:', error);
@@ -157,7 +135,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
       
       setUser(null);
-      setIsDemo(false);
       router.push('/login');
     } catch (error) {
       console.error('Logout error:', error);
@@ -165,25 +142,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(false);
     }
   };
-
-  // Provide a demo login function for development
-  useEffect(() => {
-    // For Vercel preview deployments without MongoDB, automatically use demo mode
-    const useDemo = async () => {
-      if (process.env.NODE_ENV === 'production' && !user && router.pathname !== '/login' && router.pathname !== '/signup') {
-        console.log('Auto-logging in with demo account for preview');
-        try {
-          await login('demo@example.com', 'password123');
-        } catch (error) {
-          console.error('Auto demo login failed:', error);
-        }
-      }
-    };
-    
-    if (!loading && !user) {
-      useDemo();
-    }
-  }, [loading, user, router.pathname]);
 
   return (
     <AuthContext.Provider
@@ -193,8 +151,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         login,
         signup,
         logout,
-        error,
-        isDemo
+        error
       }}
     >
       {children}
