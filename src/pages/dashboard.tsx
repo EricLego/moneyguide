@@ -125,30 +125,30 @@ const Dashboard = () => {
   return (
     <Layout title="Dashboard - MoneyGuide">
       <div className="section-spacing">
-        <div className="relative overflow-hidden bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+        <div className="relative overflow-hidden bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl shadow-sm border border-gray-100 p-8 mb-10">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
             <div>
-              <h1 className="mb-2 flex items-center">
-                <span className="bg-primary/10 text-primary p-1 rounded-md mr-2">
+              <h1 className="mb-3 flex items-center">
+                <span className="bg-primary/10 text-primary p-1.5 rounded-md mr-3">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </span>
                 Passive Income Dashboard
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-lg">
                 Welcome back, <span className="font-medium">{user?.name}</span>! 
                 Here's your financial overview for <span className="font-medium">{format(new Date(), 'MMMM yyyy')}</span>.
               </p>
             </div>
-            <div className="flex gap-2">
-              <button className="btn-outline flex items-center px-3 py-1.5 text-sm border-gray-200 hover:bg-white/80">
+            <div className="flex gap-3">
+              <button className="btn-outline flex items-center px-4 py-2 text-sm border-gray-200 hover:bg-white/80 transition-all shadow-sm hover:shadow">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                 </svg>
-                Export
+                Export Data
               </button>
-              <Link href="/income" className="btn-primary flex items-center px-3 py-1.5 text-sm">
+              <Link href="/income" className="btn-primary flex items-center px-4 py-2 text-sm shadow-md hover:shadow-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
@@ -205,11 +205,11 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6 section-spacing">
+      <div className="grid md:grid-cols-3 gap-8 mb-14">
         <div className="stat-card col-span-2 group hover:shadow-lg transition-all duration-300">
           <div className="flex justify-between">
             <div>
-              <div className="data-label mb-2 flex items-center">
+              <div className="data-label mb-3 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -224,16 +224,25 @@ const Dashboard = () => {
                     <span className="text-sm text-gray-500 font-normal ml-2">per month</span>
                   </div>
                   
+                  {/* Previous month comparison */}
+                  <div className="mt-1 text-sm flex items-center">
+                    <span className="text-gray-600">Your previous: </span>
+                    <span className="font-medium ml-1">${(displayIncome * 0.95).toFixed(2)}</span>
+                    <span className="ml-2 text-xs px-1.5 py-0.5 bg-green-100 text-green-800 rounded">
+                      +5% ↑
+                    </span>
+                  </div>
+                  
                   {/* Yearly projection info */}
-                  <div className="mt-2 text-xs text-gray-500 flex items-center">
-                    <span className="text-xs font-medium text-gray-700 mr-1">Yearly projection:</span>
-                    ${(displayIncome * 12).toFixed(2)}
+                  <div className="mt-3 text-sm text-gray-600 flex items-center">
+                    <span className="font-medium mr-1">Yearly projection:</span>
+                    <span className="text-primary font-semibold">${(displayIncome * 12).toFixed(2)}</span>
                     
                     <div className="group relative ml-2">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 cursor-help" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      <div className="absolute bottom-full left-0 mb-2 w-48 bg-white shadow-lg rounded-md p-2 text-xs text-gray-600 
+                      <div className="absolute bottom-full left-0 mb-2 w-56 bg-white shadow-lg rounded-md p-3 text-sm text-gray-600 
                                     opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
                         Simple projection based on your current monthly income.
                       </div>
@@ -243,14 +252,14 @@ const Dashboard = () => {
               )}
             </div>
             
-            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
           
-          <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="mt-6 pt-4 border-t border-gray-100">
             <Link href="/income" className="text-primary hover:text-primary/80 text-sm font-medium flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -263,7 +272,7 @@ const Dashboard = () => {
         <div className="stat-card border-secondary group hover:shadow-lg transition-all duration-300">
           <div className="flex justify-between">
             <div>
-              <div className="data-label mb-2 flex items-center">
+              <div className="data-label mb-3 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
@@ -277,16 +286,28 @@ const Dashboard = () => {
                   <span className="text-sm text-gray-500 font-normal ml-2">sources</span>
                 </div>
               )}
+              
+              {/* Source breakdown */}
+              <div className="mt-3 text-sm">
+                <div className="flex justify-between text-gray-600 mb-1">
+                  <span>Active</span>
+                  <span className="font-medium">{sampleData ? 2 : 1}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Pending</span>
+                  <span className="font-medium">{sampleData ? 1 : 0}</span>
+                </div>
+              </div>
             </div>
             
-            <div className="h-16 w-16 rounded-full bg-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="h-20 w-20 rounded-full bg-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
               </svg>
             </div>
           </div>
           
-          <div className="mt-4 pt-4 border-t border-gray-100">
+          <div className="mt-6 pt-4 border-t border-gray-100">
             <Link href="/income" className="text-secondary hover:text-secondary/80 text-sm font-medium flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -297,14 +318,24 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="card section-spacing">
-        <div className="flex justify-between items-center mb-4">
-          <h2>Income Trends</h2>
-          <div className="text-sm text-gray-500 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            Last 6 months
+      <div className="card mb-14 p-10">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h2 className="text-2xl font-semibold">Income Trends</h2>
+            <p className="text-gray-600 mt-1">See how your passive income has grown over time</p>
+          </div>
+          <div className="flex items-center space-x-3">
+            <div className="text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Last 6 months
+            </div>
+            <select className="bg-white border border-gray-300 text-gray-700 text-sm px-3 py-1.5 rounded-md shadow-sm">
+              <option>Monthly View</option>
+              <option>Quarterly View</option>
+              <option>Yearly View</option>
+            </select>
           </div>
         </div>
         
@@ -322,12 +353,37 @@ const Dashboard = () => {
             </div>
           </div>
         ) : stats?.monthlyStats?.length ? (
-          <IncomeChart data={stats.monthlyStats} currency="USD" />
+          <div className="bg-white p-4 rounded-lg border border-gray-100">
+            <IncomeChart data={stats.monthlyStats} currency="USD" />
+            
+            <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between text-sm text-gray-600">
+              <div>
+                <span className="font-medium">Average monthly income:</span> ${(displayIncome * 0.85).toFixed(2)}
+              </div>
+              <div>
+                <span className="font-medium">Growth rate:</span> 
+                <span className="text-green-600 ml-1">+15.2% in 6 months</span>
+              </div>
+            </div>
+          </div>
         ) : (
           <>
             {sampleData ? (
               <div className="relative">
-                <IncomeChart data={sampleMonthlyStats} currency="USD" />
+                <div className="bg-white p-4 rounded-lg border border-gray-100">
+                  <IncomeChart data={sampleMonthlyStats} currency="USD" />
+                  
+                  <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between text-sm text-gray-600">
+                    <div>
+                      <span className="font-medium">Average monthly income:</span> $1,087.88
+                    </div>
+                    <div>
+                      <span className="font-medium">Growth rate:</span> 
+                      <span className="text-green-600 ml-1">+31.6% in 6 months</span>
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="absolute top-0 right-0 left-0 bottom-0 bg-white/50 flex items-center justify-center pointer-events-none">
                   <div className="bg-blue-50 border border-blue-200 rounded-md p-3 shadow-sm">
                     <p className="text-sm font-medium text-blue-700">Sample data shown</p>
@@ -335,13 +391,13 @@ const Dashboard = () => {
                 </div>
               </div>
             ) : (
-              <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500">
-                <svg className="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="bg-gray-50 rounded-lg p-10 text-center text-gray-500">
+                <svg className="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                <p className="font-medium">No income data available</p>
-                <p className="mt-1">Add your first income source to start tracking your financial progress.</p>
-                <Link href="/income" className="btn-primary inline-block mt-4">
+                <p className="font-medium text-xl mb-2">No income data available</p>
+                <p className="text-lg mb-6">Add your first income source to start tracking your financial progress.</p>
+                <Link href="/income" className="btn-primary inline-block px-6 py-3 text-lg shadow-md hover:shadow-lg transition-all">
                   Add Income Source
                 </Link>
               </div>
@@ -350,20 +406,26 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className="card section-spacing">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center">
-            <h2>Income Calendar</h2>
-            <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+      <div className="card p-10 mb-16">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold">Income Calendar</h2>
+            <p className="text-gray-600 mt-1">Schedule and track your upcoming payments</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
               Monthly View
             </span>
+            <Link href="/income" className="text-primary hover:text-primary-dark text-sm font-medium flex items-center group transition-colors">
+              View all sources
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
-          <Link href="/income" className="text-primary hover:underline text-sm font-medium flex items-center group">
-            View all sources
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
         
         {loadingEvents ? (
@@ -372,7 +434,7 @@ const Dashboard = () => {
             <div className="h-80 bg-gray-200 rounded-lg"></div>
           </div>
         ) : sampleData || events.length > 0 ? (
-          <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+          <div className="border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
             <CalendarView 
               events={events.length > 0 ? events : [
                 { id: 'sample-1', title: 'Dividend Income', amount: 125.50, currency: 'USD', date: new Date(), frequency: 'monthly' },
@@ -382,19 +444,40 @@ const Dashboard = () => {
               onEventSelect={handleEventSelect}
               onDateChange={fetchCalendarEvents}
             />
+            
+            <div className="mt-4 pt-4 border-t border-gray-100 mx-4 flex flex-col sm:flex-row justify-between text-sm text-gray-600 pb-2">
+              <div className="mb-2 sm:mb-0">
+                <span className="font-medium">Tip:</span> Click on any event to view details
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
+                  <span>One-time</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 rounded-full bg-secondary mr-1.5"></div>
+                  <span>Recurring</span>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
-          <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500">
-            <div className="rounded-full bg-gray-100 w-20 h-20 flex items-center justify-center mx-auto mb-4">
-              <svg className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="bg-gray-50 rounded-lg p-10 text-center text-gray-500">
+            <div className="rounded-full bg-gray-100 w-24 h-24 flex items-center justify-center mx-auto mb-4">
+              <svg className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
-            <p className="font-medium mb-1">No calendar events this month</p>
-            <p className="mb-4">Add income sources with specific dates to see them in the calendar.</p>
-            <div className="inline-flex flex-col items-start text-left bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <span className="text-xs text-gray-500 mb-1">Quick Tip</span>
-              <p className="text-sm text-gray-700">When adding income, set the date to when you expect to receive the payment to help with cash flow planning.</p>
+            <p className="font-medium text-xl mb-2">No calendar events this month</p>
+            <p className="text-lg mb-6">Add income sources with specific dates to see them in the calendar.</p>
+            <div className="max-w-md mx-auto bg-white border border-gray-200 rounded-lg p-5 shadow-sm text-left">
+              <div className="flex items-center mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="font-medium text-gray-700">Quick Tip</span>
+              </div>
+              <p className="text-gray-600">When adding income, set the date to when you expect to receive the payment to help with cash flow planning and get notified when payments are due.</p>
             </div>
           </div>
         )}

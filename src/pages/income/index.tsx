@@ -133,30 +133,37 @@ const IncomePage = () => {
   return (
     <Layout title="Passive Income - MoneyGuide">
       <div className="section-spacing">
-        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-6 bg-gradient-to-r from-primary/5 to-secondary/5 p-8 rounded-xl shadow-sm border border-gray-100 mb-6">
           <div>
-            <h1 className="mb-2">Passive Income</h1>
-            <p className="text-gray-600">
-              Manage all your passive income sources and track your financial growth.
+            <h1 className="text-3xl font-bold mb-3 flex items-center text-gray-800">
+              <span className="bg-primary/10 text-primary p-1.5 rounded-md mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </span>
+              Passive Income
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Manage all your passive income sources and track your financial growth over time.
             </p>
           </div>
           <button 
             onClick={() => setShowForm(!showForm)} 
-            className={`${showForm ? 'btn-outline' : 'btn-primary'} flex items-center self-start sm:self-center`}
+            className={`${showForm ? 'btn-outline' : 'btn-primary'} flex items-center self-start sm:self-center px-6 py-3 shadow-md hover:shadow-lg transition-all`}
           >
             {showForm ? (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
                 Cancel
               </>
             ) : (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
-                Add Income
+                Add Income Source
               </>
             )}
           </button>
@@ -175,8 +182,8 @@ const IncomePage = () => {
       )}
 
       {showForm && (
-        <div className="card mb-8 border-t-4 border-primary">
-          <h2 className="mb-6">Add New Income Source</h2>
+        <div className="card mb-10 border-t-4 border-primary p-8 shadow-md hover:shadow-lg transition-all">
+          <h2 className="text-2xl font-bold mb-6">Add New Income Source</h2>
           <IncomeForm 
             onSubmit={handleAddIncome}
             onCancel={() => setShowForm(false)}
@@ -184,10 +191,16 @@ const IncomePage = () => {
         </div>
       )}
 
-      <div className="card">
-        <div className="flex justify-between items-center mb-6">
-          <h2>Your Income Sources</h2>
-          <div className="text-sm text-gray-500 font-medium">
+      <div className="card p-8 shadow-md">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-2xl font-semibold">Your Income Sources</h2>
+            <p className="text-gray-600 mt-1">Track and manage all your passive income streams</p>
+          </div>
+          <div className="text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
             {incomes.length} {incomes.length === 1 ? 'source' : 'sources'}
           </div>
         </div>
@@ -248,7 +261,7 @@ const IncomePage = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
                         onClick={() => router.push(`/income/${income._id}`)}
-                        className="inline-flex items-center text-primary hover:text-primary/80 mr-3"
+                        className="inline-flex items-center text-primary hover:text-primary-dark transition-colors mr-4"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -257,7 +270,7 @@ const IncomePage = () => {
                       </button>
                       <button
                         onClick={() => handleDeleteIncome(income._id)}
-                        className="inline-flex items-center text-red-600 hover:text-red-800"
+                        className="inline-flex items-center text-red-600 hover:text-red-800 transition-colors"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -269,25 +282,58 @@ const IncomePage = () => {
                 ))}
               </tbody>
             </table>
+            
+            <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+              <div className="flex justify-between items-center text-sm text-gray-600">
+                <div>
+                  Showing {incomes.length} {incomes.length === 1 ? 'record' : 'records'}
+                </div>
+                <div className="flex items-center">
+                  <button className="px-2 py-1 border border-gray-300 rounded-md mr-2 hover:bg-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <span className="mx-2">Page 1</span>
+                  <button className="px-2 py-1 border border-gray-300 rounded-md ml-2 hover:bg-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
-          <div className="bg-gray-50 rounded-lg p-8 text-center text-gray-500">
-            <svg className="mx-auto h-12 w-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p className="font-medium mb-1">No income sources found</p> 
-            <p>Add your first income source to start tracking your passive income progress.</p>
+          <div className="bg-gray-50 rounded-lg p-12 text-center text-gray-500">
+            <div className="rounded-full bg-gray-100 w-24 h-24 flex items-center justify-center mx-auto mb-4">
+              <svg className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p className="font-medium text-xl mb-2">No income sources found</p> 
+            <p className="text-lg mb-8">Add your first income source to start tracking your passive income progress.</p>
             {!showForm && (
               <button 
                 onClick={() => setShowForm(true)} 
-                className="mt-4 btn-primary inline-flex items-center"
+                className="btn-primary inline-flex items-center px-6 py-3 shadow-md hover:shadow-lg transition-all text-lg"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
-                Add Income Source
+                Add Your First Income Source
               </button>
             )}
+            
+            <div className="mt-10 max-w-md mx-auto bg-white border border-gray-200 rounded-lg p-5 shadow-sm text-left">
+              <div className="flex items-center mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="font-medium text-gray-700">Why track passive income?</span>
+              </div>
+              <p className="text-gray-600">Passive income sources provide financial security and freedom over time. By tracking your progress here, you can visualize growth and make informed decisions about your financial future.</p>
+            </div>
           </div>
         )}
       </div>
