@@ -70,22 +70,30 @@ const CalendarView: React.FC<CalendarViewProps> = ({
     return (
       <div 
         key={day.toISOString()} 
-        className={`h-28 border border-gray-200 p-1 ${isToday ? 'bg-blue-50 border-blue-300' : ''}`}
+        className={`h-28 border border-gray-200 p-1 ${isToday ? 'bg-blue-50 border-blue-300' : 'hover:bg-gray-50'} transition-colors`}
       >
         <div className="font-medium text-sm mb-1">
           {format(day, 'd')}
         </div>
         <div className="overflow-y-auto max-h-20">
-          {dayEvents.map(event => (
-            <div 
-              key={event.id} 
-              className="text-xs p-1 mb-1 rounded bg-primary text-white truncate cursor-pointer hover:bg-primary/90"
-              onClick={() => onEventSelect && onEventSelect(event)}
-              title={`${event.title}: ${event.currency} ${event.amount}`}
-            >
-              {event.title}: {event.currency} {event.amount}
-            </div>
-          ))}
+          {dayEvents.map(event => {
+            // Determine background color based on frequency
+            const bgColorClass = event.frequency === 'monthly' || 
+                                event.frequency === 'quarterly' || 
+                                event.frequency === 'annually' 
+                                ? 'bg-secondary' : 'bg-primary';
+            
+            return (
+              <div 
+                key={event.id} 
+                className={`text-xs p-1 mb-1 rounded ${bgColorClass} text-white truncate cursor-pointer hover:opacity-90 transition-opacity`}
+                onClick={() => onEventSelect && onEventSelect(event)}
+                title={`${event.title}: ${event.currency} ${event.amount}`}
+              >
+                {event.title}: {event.currency} {event.amount}
+              </div>
+            );
+          })}
         </div>
       </div>
     );
@@ -93,35 +101,41 @@ const CalendarView: React.FC<CalendarViewProps> = ({
 
   return (
     <div className="calendar-container">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">
+      <div className="flex justify-between items-center mb-4 px-4">
+        <h2 className="text-xl font-semibold flex items-center">
           {format(currentDate, 'MMMM yyyy')}
         </h2>
-        <div className="flex space-x-2">
+        <div className="flex">
           <button 
             onClick={goToPreviousMonth} 
-            className="p-1 rounded-md hover:bg-gray-100"
+            className="p-2 rounded-md hover:bg-gray-100 text-gray-700 transition-colors flex items-center"
           >
-            &larr; Prev
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span className="hidden sm:inline">Prev</span>
           </button>
           <button 
             onClick={goToCurrentMonth} 
-            className="p-1 rounded-md hover:bg-gray-100"
+            className="p-2 mx-1 rounded-md hover:bg-blue-50 text-primary font-medium transition-colors"
           >
             Today
           </button>
           <button 
             onClick={goToNextMonth} 
-            className="p-1 rounded-md hover:bg-gray-100"
+            className="p-2 rounded-md hover:bg-gray-100 text-gray-700 transition-colors flex items-center"
           >
-            Next &rarr;
+            <span className="hidden sm:inline">Next</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-7 gap-px">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="text-center font-medium py-2 bg-gray-50">
+          <div key={day} className="text-center font-medium py-2 bg-gray-50 text-gray-700 text-sm">
             {day}
           </div>
         ))}

@@ -520,24 +520,7 @@ const Dashboard = () => {
                 onDateChange={fetchCalendarEvents}
               />
               
-              {/* Tooltip example for calendar events */}
-              <div className="absolute bottom-20 right-32 bg-white border border-gray-200 rounded-lg p-3 shadow-lg text-sm max-w-xs z-10">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-semibold">Rental Income</span>
-                  <span className="bg-secondary/20 text-secondary text-xs px-1.5 py-0.5 rounded">Recurring</span>
-                </div>
-                <div className="flex justify-between mb-1">
-                  <span className="text-gray-600">Amount:</span>
-                  <span className="font-medium">$875.00</span>
-                </div>
-                <div className="flex justify-between mb-3">
-                  <span className="text-gray-600">Date:</span>
-                  <span>{format(new Date(), 'MMM d, yyyy')}</span>
-                </div>
-                <button className="text-xs text-primary font-medium hover:underline w-full text-center">
-                  Click to view details
-                </button>
-              </div>
+              {/* Event tooltip is now implemented in the CalendarView component */}
             </div>
             
             <div className="mt-4 pt-4 border-t border-gray-100 mx-4 flex flex-col sm:flex-row justify-between text-sm text-gray-600 pb-2">
