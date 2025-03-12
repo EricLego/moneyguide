@@ -4,14 +4,45 @@ import User from '@/models/User';
 import { generateToken } from '@/utils/auth';
 import { setCookie } from 'cookies-next';
 
+// Set timeout for the API route
+export const config = {
+  api: {
+    bodyParser: true,
+    externalResolver: true,
+    responseLimit: false,
+  },
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Add CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization'
+  );
+
+  // Handle preflight OPTIONS request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Method not allowed' });
   }
 
-  await dbConnect();
-
   try {
+    // Connect to the database with timeout
+    const dbPromise = dbConnect();
+    
+    // Set a timeout for database connection
+    const timeout = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Database connection timeout')), 5000)
+    );
+    
+    await Promise.race([dbPromise, timeout]);
+    
     const { name, email, password } = req.body;
 
     // Validation
@@ -22,8 +53,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
+    // For demonstration purposes, if MONGO_URI is not set, use demo signup
+    if (!process.env.MONGO_URI) {
+      console.log('No MongoDB URI found - using demo mode for signup');
+      
+      // Create a demo user
+      const demoUser = {
+        _id: 'demo123',
+        name,
+        email,
+      };
+      
+      const token = 'demo-token-123456789';
+      
+      // Set demo cookie
+      setCookie('token', token, { 
+        req, 
+        res, 
+        maxAge: 60 * 60 * 24 * 7, // 1 week
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/'
+      });
+      
+      return res.status(201).json({
+        success: true,
+        data: demoUser,
+        demo: true
+      });
+    }
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email }).exec();
     if (existingUser) {
       return res.status(409).json({ 
         success: false, 
@@ -48,7 +110,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       maxAge: 60 * 60 * 24 * 7, // 1 week
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax', // Changed to lax for better compatibility
       path: '/'
     });
 
@@ -62,6 +124,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
   } catch (error: any) {
+    console.error('Signup error:', error);
+    
     return res.status(500).json({
       success: false,
       message: error.message || 'Error creating user',
