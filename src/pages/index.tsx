@@ -26,18 +26,19 @@ const Home: React.FC = () => {
             Take Control of Your Financial Future
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mb-10 leading-relaxed">
-            MoneyGuide helps you track your passive income, expenses, investments, and net worth in one place.
+            MoneyGuide helps you track your passive income, expenses, investments, and net worth in one place. 
+            <span className="font-medium">Get started in under 2 minutes.</span>
           </p>
 
           {!loading && (
-            <div className="space-x-4 mt-8">
+            <div className="space-y-4 sm:space-y-0 sm:space-x-4 mt-8 flex flex-col sm:flex-row justify-center items-center">
               {user ? (
-                <Link href="/dashboard" className="btn-primary text-lg px-8 py-3 shadow-lg hover:shadow-xl transition-all">
+                <Link href="/dashboard" className="btn-primary text-lg px-8 py-3 shadow-lg hover:shadow-xl transition-all w-full sm:w-auto">
                   Go to Dashboard
                 </Link>
               ) : (
                 <>
-                  <Link href="/signup" className="btn-primary text-lg px-8 py-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                  <Link href="/signup" className="btn-primary text-lg px-8 py-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all w-full sm:w-auto">
                     Sign Up Free
                   </Link>
                   <Link href="/login" className="inline-block px-6 py-3 text-primary font-medium hover:text-primary-dark transition-colors">
@@ -63,8 +64,7 @@ const Home: React.FC = () => {
           </div>
           <h2 className="text-2xl font-semibold mb-3 text-center">Track Passive Income</h2>
           <p className="text-gray-600 text-center">
-            Monitor all your income streams in one place. See your total monthly
-            income and track changes over time.
+            Monitor all your income streams in one place. Get real-time updates on your earnings without the hassle.
           </p>
         </div>
 
@@ -76,8 +76,7 @@ const Home: React.FC = () => {
           </div>
           <h2 className="text-2xl font-semibold mb-3 text-center">Visualize Your Progress</h2>
           <p className="text-gray-600 text-center">
-            Interactive charts and calendar views help you understand your
-            financial trends at a glance.
+            Interactive charts and calendar views help you understand your financial trends at a glance, making it easier to plan ahead.
           </p>
         </div>
 
@@ -89,8 +88,7 @@ const Home: React.FC = () => {
           </div>
           <h2 className="text-2xl font-semibold mb-3 text-center">Plan Your Future</h2>
           <p className="text-gray-600 text-center">
-            Set goals, track your progress, and make informed decisions about
-            your financial future.
+            Set personalized financial goals, track your progress in real-time, and make informed decisions about your financial future.
           </p>
         </div>
       </div>
@@ -99,7 +97,7 @@ const Home: React.FC = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto">
-            Join thousands of users who are taking control of their finances with MoneyGuide.
+            Join over 10,000+ users who are taking control of their finances with MoneyGuide.
           </p>
           {!loading && !user && (
             <Link href="/signup" className="btn-primary text-lg px-8 py-3 shadow-lg hover:shadow-xl hover:scale-105 transition-all">

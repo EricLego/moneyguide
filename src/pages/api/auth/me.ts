@@ -49,15 +49,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ success: false, message: 'Invalid or expired token' });
     }
 
-    // Connect to the database with timeout
+    // Connect to the database with extended timeout
     const dbPromise = dbConnect();
     
-    // Set a timeout for database connection
+    // Set a longer timeout for database connection (20 seconds)
     const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Database connection timeout')), 10000)
+      setTimeout(() => reject(new Error('Database connection timeout')), 20000)
     );
     
-    await Promise.race([dbPromise, timeout]);
+    try {
+      await Promise.race([dbPromise, timeout]);
+    } catch (error) {
+      console.error('Database connection failed on first attempt. Retrying...');
+      // Wait a moment before retry
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Try again with an even longer timeout
+      await Promise.race([
+        dbConnect(), 
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Database connection timeout on retry')), 30000))
+      ]);
+    }
 
     // Find user in database
     const user = await User.findById(decodedToken.id).select('-password').exec();
