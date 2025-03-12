@@ -30,7 +30,33 @@ const Dashboard = () => {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [stats, setStats] = useState<StatsData | null>(null);
-  const [events, setEvents] = useState<IncomeEvent[]>([]);
+  const [events, setEvents] = useState<IncomeEvent[]>([
+    // Default sample events for initial render
+    { 
+      id: 'sample-1', 
+      title: 'Dividend Income', 
+      amount: 125.50, 
+      currency: 'USD', 
+      date: new Date(), 
+      frequency: 'monthly' 
+    },
+    { 
+      id: 'sample-2', 
+      title: 'Rental Income', 
+      amount: 875.00, 
+      currency: 'USD', 
+      date: new Date(), 
+      frequency: 'monthly' 
+    },
+    { 
+      id: 'sample-3', 
+      title: 'Side Project', 
+      amount: 250.25, 
+      currency: 'USD', 
+      date: new Date(), 
+      frequency: 'quarterly' 
+    }
+  ]);
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,27 +99,63 @@ const Dashboard = () => {
   }, [user]);
 
   // Fetch calendar events for current month
+  // Modify fetchCalendarEvents to also handle sample data
   const fetchCalendarEvents = async (year: number, month: number) => {
     if (!user) return;
     
     setLoadingEvents(true);
     
+    // Always create sample events for demo purposes
+    const today = new Date();
+    const sampleEvents = [
+      { 
+        id: 'sample-1', 
+        title: 'Dividend Income', 
+        amount: 125.50, 
+        currency: 'USD', 
+        date: new Date(year, month-1, 15), 
+        frequency: 'monthly' 
+      },
+      { 
+        id: 'sample-2', 
+        title: 'Rental Income', 
+        amount: 875.00, 
+        currency: 'USD', 
+        date: new Date(year, month-1, 1), 
+        frequency: 'monthly' 
+      },
+      { 
+        id: 'sample-3', 
+        title: 'Side Project', 
+        amount: 250.25, 
+        currency: 'USD', 
+        date: new Date(year, month-1, 22), 
+        frequency: 'quarterly' 
+      }
+    ];
+    
     try {
       const response = await fetch(`/api/income/calendar?year=${year}&month=${month}`);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch calendar data');
+        console.warn('Using sample data because API request failed');
+        setEvents(sampleEvents);
+        return;
       }
       
       const result = await response.json();
       
-      if (result.success) {
+      if (result.success && result.data.length > 0) {
         setEvents(result.data);
       } else {
-        throw new Error(result.message || 'Error fetching calendar data');
+        // If no real data, use sample data
+        console.log('No calendar data found, using sample data');
+        setEvents(sampleEvents);
       }
     } catch (err: any) {
       console.error('Error fetching calendar events:', err);
+      // Use sample data on error
+      setEvents(sampleEvents);
     } finally {
       setLoadingEvents(false);
     }
@@ -511,11 +573,7 @@ const Dashboard = () => {
           <div className="border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
             <div className="relative">
               <CalendarView 
-                events={events.length > 0 ? events : [
-                  { id: 'sample-1', title: 'Dividend Income', amount: 125.50, currency: 'USD', date: new Date(), frequency: 'monthly' },
-                  { id: 'sample-2', title: 'Rental Income', amount: 875.00, currency: 'USD', date: new Date(), frequency: 'monthly' },
-                  { id: 'sample-3', title: 'Side Project', amount: 250.25, currency: 'USD', date: new Date(), frequency: 'monthly' }
-                ]} 
+                events={events} 
                 onEventSelect={handleEventSelect}
                 onDateChange={fetchCalendarEvents}
               />
