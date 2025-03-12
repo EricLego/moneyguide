@@ -205,7 +205,9 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8 mb-14">
+      <div className="grid md:grid-cols-3 gap-8 mb-14 relative">
+        {/* Subtle divider */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 w-[95%] h-px bg-gray-100 -bottom-7"></div>
         <div className="stat-card col-span-2 group hover:shadow-lg transition-all duration-300">
           <div className="flex justify-between">
             <div>
@@ -228,9 +230,15 @@ const Dashboard = () => {
                   <div className="mt-1 text-sm flex items-center">
                     <span className="text-gray-600">Your previous: </span>
                     <span className="font-medium ml-1">${(displayIncome * 0.95).toFixed(2)}</span>
-                    <span className="ml-2 text-xs px-1.5 py-0.5 bg-green-100 text-green-800 rounded">
-                      +5% ↑
-                    </span>
+                    <div className="flex items-center ml-2 px-2 py-0.5 bg-green-100 text-green-800 rounded">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                      </svg>
+                      <span className="text-xs font-medium">+5%</span>
+                    </div>
+                    <div className="ml-2 text-xs text-gray-500">
+                      +${(displayIncome - displayIncome * 0.95).toFixed(2)}
+                    </div>
                   </div>
                   
                   {/* Yearly projection info */}
@@ -354,15 +362,36 @@ const Dashboard = () => {
           </div>
         ) : stats?.monthlyStats?.length ? (
           <div className="bg-white p-4 rounded-lg border border-gray-100">
-            <IncomeChart data={stats.monthlyStats} currency="USD" />
-            
-            <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between text-sm text-gray-600">
-              <div>
-                <span className="font-medium">Average monthly income:</span> ${(displayIncome * 0.85).toFixed(2)}
+            <div className="relative">
+              <IncomeChart data={stats.monthlyStats} currency="USD" />
+              
+              {/* Tooltip example - would be placed dynamically based on data points */}
+              <div className="absolute top-1/3 left-2/3 bg-white border border-gray-200 rounded-lg p-3 shadow-lg text-sm">
+                <div className="font-semibold mb-1">November 2023</div>
+                <div className="flex justify-between mb-1">
+                  <span className="text-gray-600">Income:</span>
+                  <span className="font-medium">${(displayIncome * 0.9).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-500">vs. Previous:</span>
+                  <span className="text-green-600">+4.2%</span>
+                </div>
               </div>
-              <div>
-                <span className="font-medium">Growth rate:</span> 
-                <span className="text-green-600 ml-1">+15.2% in 6 months</span>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between text-sm text-gray-600 gap-4">
+              <div className="flex items-center">
+                <span className="font-medium mr-2">Average monthly income:</span> 
+                <span className="bg-gray-100 px-2 py-1 rounded-md">${(displayIncome * 0.85).toFixed(2)}</span>
+              </div>
+              <div className="flex items-center">
+                <span className="font-medium mr-2">Growth rate:</span> 
+                <div className="flex items-center px-2 py-1 bg-green-100 text-green-800 rounded-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  <span>+15.2% in 6 months</span>
+                </div>
               </div>
             </div>
           </div>
@@ -371,15 +400,36 @@ const Dashboard = () => {
             {sampleData ? (
               <div className="relative">
                 <div className="bg-white p-4 rounded-lg border border-gray-100">
-                  <IncomeChart data={sampleMonthlyStats} currency="USD" />
-                  
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between text-sm text-gray-600">
-                    <div>
-                      <span className="font-medium">Average monthly income:</span> $1,087.88
+                  <div className="relative">
+                    <IncomeChart data={sampleMonthlyStats} currency="USD" />
+                    
+                    {/* Tooltip example - would be placed dynamically based on data points */}
+                    <div className="absolute top-1/3 left-2/3 bg-white border border-gray-200 rounded-lg p-3 shadow-lg text-sm">
+                      <div className="font-semibold mb-1">December 2023</div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-gray-600">Income:</span>
+                        <span className="font-medium">$1,175.45</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-500">vs. Previous:</span>
+                        <span className="text-green-600">+5.2%</span>
+                      </div>
                     </div>
-                    <div>
-                      <span className="font-medium">Growth rate:</span> 
-                      <span className="text-green-600 ml-1">+31.6% in 6 months</span>
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row justify-between text-sm text-gray-600 gap-4">
+                    <div className="flex items-center">
+                      <span className="font-medium mr-2">Average monthly income:</span> 
+                      <span className="bg-gray-100 px-2 py-1 rounded-md">$1,087.88</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="font-medium mr-2">Growth rate:</span> 
+                      <div className="flex items-center px-2 py-1 bg-green-100 text-green-800 rounded-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span>+31.6% in 6 months</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -406,19 +456,43 @@ const Dashboard = () => {
         )}
       </div>
 
-      <div className="card p-10 mb-16">
+      <div className="card p-10 mb-16 relative">
+        {/* Top accent border */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-t-lg"></div>
+        
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
-            <h2 className="text-2xl font-semibold">Income Calendar</h2>
+            <h2 className="text-2xl font-semibold flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Income Calendar
+            </h2>
             <p className="text-gray-600 mt-1">Schedule and track your upcoming payments</p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Monthly View
-            </span>
+            <div className="relative group">
+              <span className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800 cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Monthly View
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </span>
+              
+              {/* Dropdown menu */}
+              <div className="absolute right-0 mt-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg 
+                              opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10">
+                <div className="py-1">
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Daily View</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 bg-blue-50">Monthly View</a>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Yearly View</a>
+                </div>
+              </div>
+            </div>
+            
             <Link href="/income" className="text-primary hover:text-primary-dark text-sm font-medium flex items-center group transition-colors">
               View all sources
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -435,18 +509,42 @@ const Dashboard = () => {
           </div>
         ) : sampleData || events.length > 0 ? (
           <div className="border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
-            <CalendarView 
-              events={events.length > 0 ? events : [
-                { id: 'sample-1', title: 'Dividend Income', amount: 125.50, currency: 'USD', date: new Date(), frequency: 'monthly' },
-                { id: 'sample-2', title: 'Rental Income', amount: 875.00, currency: 'USD', date: new Date(), frequency: 'monthly' },
-                { id: 'sample-3', title: 'Side Project', amount: 250.25, currency: 'USD', date: new Date(), frequency: 'monthly' }
-              ]} 
-              onEventSelect={handleEventSelect}
-              onDateChange={fetchCalendarEvents}
-            />
+            <div className="relative">
+              <CalendarView 
+                events={events.length > 0 ? events : [
+                  { id: 'sample-1', title: 'Dividend Income', amount: 125.50, currency: 'USD', date: new Date(), frequency: 'monthly' },
+                  { id: 'sample-2', title: 'Rental Income', amount: 875.00, currency: 'USD', date: new Date(), frequency: 'monthly' },
+                  { id: 'sample-3', title: 'Side Project', amount: 250.25, currency: 'USD', date: new Date(), frequency: 'monthly' }
+                ]} 
+                onEventSelect={handleEventSelect}
+                onDateChange={fetchCalendarEvents}
+              />
+              
+              {/* Tooltip example for calendar events */}
+              <div className="absolute bottom-20 right-32 bg-white border border-gray-200 rounded-lg p-3 shadow-lg text-sm max-w-xs z-10">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-semibold">Rental Income</span>
+                  <span className="bg-secondary/20 text-secondary text-xs px-1.5 py-0.5 rounded">Recurring</span>
+                </div>
+                <div className="flex justify-between mb-1">
+                  <span className="text-gray-600">Amount:</span>
+                  <span className="font-medium">$875.00</span>
+                </div>
+                <div className="flex justify-between mb-3">
+                  <span className="text-gray-600">Date:</span>
+                  <span>{format(new Date(), 'MMM d, yyyy')}</span>
+                </div>
+                <button className="text-xs text-primary font-medium hover:underline w-full text-center">
+                  Click to view details
+                </button>
+              </div>
+            </div>
             
             <div className="mt-4 pt-4 border-t border-gray-100 mx-4 flex flex-col sm:flex-row justify-between text-sm text-gray-600 pb-2">
-              <div className="mb-2 sm:mb-0">
+              <div className="mb-2 sm:mb-0 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 <span className="font-medium">Tip:</span> Click on any event to view details
               </div>
               <div className="flex items-center space-x-4">
@@ -470,6 +568,16 @@ const Dashboard = () => {
             </div>
             <p className="font-medium text-xl mb-2">No calendar events this month</p>
             <p className="text-lg mb-6">Add income sources with specific dates to see them in the calendar.</p>
+            
+            <Link href="/income" className="btn-primary inline-block px-6 py-2 mb-8 shadow-md hover:shadow-lg transition-all">
+              <span className="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add Income Source
+              </span>
+            </Link>
+            
             <div className="max-w-md mx-auto bg-white border border-gray-200 rounded-lg p-5 shadow-sm text-left">
               <div className="flex items-center mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -478,6 +586,12 @@ const Dashboard = () => {
                 <span className="font-medium text-gray-700">Quick Tip</span>
               </div>
               <p className="text-gray-600">When adding income, set the date to when you expect to receive the payment to help with cash flow planning and get notified when payments are due.</p>
+            </div>
+            
+            <div className="mt-6 w-full p-3 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+              <p className="text-sm text-gray-500">
+                Click or tap on any date to quickly add an income entry
+              </p>
             </div>
           </div>
         )}
