@@ -14,6 +14,7 @@ interface AuthContextType {
   signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   error: string | null;
+  isDemo: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,17 +23,37 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDemo, setIsDemo] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     // Check if user is logged in
     const checkLoggedIn = async () => {
       try {
-        const response = await fetch('/api/auth/me');
+        console.log('Checking auth status...');
+        const response = await fetch('/api/auth/me', {
+          credentials: 'include' // Include cookies in the request
+        });
+        
         if (response.ok) {
           const data = await response.json();
+          console.log('Auth check response:', data);
+          
           if (data.success) {
             setUser(data.data);
+            
+            // Check if this is demo mode
+            if (data.demo) {
+              console.log('Running in demo mode');
+              setIsDemo(true);
+            }
+          }
+        } else {
+          console.log('Auth check failed:', response.status);
+          
+          // If API returns 401, user is not authenticated
+          if (response.status === 401) {
+            setUser(null);
           }
         }
       } catch (error) {
@@ -50,21 +71,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setError(null);
     
     try {
+      console.log('Attempting login...');
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+        credentials: 'include' // Include cookies in the request
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        const errorData = await response.json();
+        console.error('Login failed:', errorData);
+        throw new Error(errorData.message || 'Login failed');
       }
 
+      const data = await response.json();
+      console.log('Login successful:', data);
+
       setUser(data.data);
+      
+      // Check if this is demo mode
+      if (data.demo) {
+        console.log('Running in demo mode');
+        setIsDemo(true);
+      }
+      
       router.push('/dashboard');
     } catch (error: any) {
+      console.error('Login error:', error);
       setError(error.message);
       throw error;
     } finally {
@@ -77,21 +111,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setError(null);
     
     try {
+      console.log('Attempting signup...');
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
+        credentials: 'include' // Include cookies in the request
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Signup failed');
+        const errorData = await response.json();
+        console.error('Signup failed:', errorData);
+        throw new Error(errorData.message || 'Signup failed');
       }
 
+      const data = await response.json();
+      console.log('Signup successful:', data);
+
       setUser(data.data);
+      
+      // Check if this is demo mode
+      if (data.demo) {
+        console.log('Running in demo mode');
+        setIsDemo(true);
+      }
+      
       router.push('/dashboard');
     } catch (error: any) {
+      console.error('Signup error:', error);
       setError(error.message);
       throw error;
     } finally {
@@ -103,11 +150,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLoading(true);
     
     try {
+      console.log('Logging out...');
       await fetch('/api/auth/logout', {
         method: 'POST',
+        credentials: 'include' // Include cookies in the request
       });
       
       setUser(null);
+      setIsDemo(false);
       router.push('/login');
     } catch (error) {
       console.error('Logout error:', error);
@@ -115,6 +165,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setLoading(false);
     }
   };
+
+  // Provide a demo login function for development
+  useEffect(() => {
+    // For Vercel preview deployments without MongoDB, automatically use demo mode
+    const useDemo = async () => {
+      if (process.env.NODE_ENV === 'production' && !user && router.pathname !== '/login' && router.pathname !== '/signup') {
+        console.log('Auto-logging in with demo account for preview');
+        try {
+          await login('demo@example.com', 'password123');
+        } catch (error) {
+          console.error('Auto demo login failed:', error);
+        }
+      }
+    };
+    
+    if (!loading && !user) {
+      useDemo();
+    }
+  }, [loading, user, router.pathname]);
 
   return (
     <AuthContext.Provider
@@ -125,6 +194,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         signup,
         logout,
         error,
+        isDemo
       }}
     >
       {children}
