@@ -1,0 +1,42 @@
+{
+  "name": "moneyguide",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "test": "jest"
+  },
+  "dependencies": {
+    "next": "^13.4.19",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "mongoose": "^7.5.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "chart.js": "^4.4.0",
+    "react-chartjs-2": "^5.2.0",
+    "tailwindcss": "^3.3.3",
+    "postcss": "^8.4.29",
+    "autoprefixer": "^10.4.15",
+    "react-hook-form": "^7.46.1",
+    "cookies-next": "^2.1.2",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.21",
+    "@types/node": "^20.6.0",
+    "@types/bcryptjs": "^2.4.3",
+    "@types/jsonwebtoken": "^9.0.2",
+    "typescript": "^5.2.2",
+    "eslint": "^8.49.0",
+    "eslint-config-next": "^13.4.19",
+    "prettier": "^3.0.3",
+    "jest": "^29.6.4",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.1.3"
+  }
+}
