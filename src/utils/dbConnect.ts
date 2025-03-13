@@ -59,10 +59,18 @@ async function dbConnect() {
     const opts = {
       bufferCommands: false,
       // Add these options for more reliable connections
-      serverSelectionTimeoutMS: 10000, // Timeout after 10 seconds
-      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+      serverSelectionTimeoutMS: 30000, // Timeout after 30 seconds
+      socketTimeoutMS: 60000, // Close sockets after 60 seconds of inactivity
+      connectTimeoutMS: 30000, // Connection timeout of 30 seconds
       family: 4 // Use IPv4, skip trying IPv6
     };
+
+    // If we've had multiple failed attempts, add retry logic with backoff
+    if (global.mongooseConnection.connectionAttempts > 1) {
+      console.log(`Retry attempt ${global.mongooseConnection.connectionAttempts} with backoff...`);
+      // Add a delay that increases with each attempt (0.5 sec, 1 sec, 1.5 sec, etc.)
+      await new Promise(resolve => setTimeout(resolve, 500 * global.mongooseConnection.connectionAttempts));
+    }
 
     global.mongooseConnection.promise = mongoose.connect(MONGODB_URI, opts);
     await global.mongooseConnection.promise;
@@ -74,9 +82,21 @@ async function dbConnect() {
     global.mongooseConnection.connectionAttempts = 0;
     
     return mongoose;
-  } catch (error) {
+  } catch (error: any) {
     global.mongooseConnection.promise = undefined;
-    console.error(`MongoDB connection attempt ${global.mongooseConnection.connectionAttempts} failed:`, error);
+    
+    // Create a more informative error message
+    const errorMessage = error.message || 'Unknown database error';
+    const attemptsInfo = `(Attempt ${global.mongooseConnection.connectionAttempts})`;
+    
+    console.error(`MongoDB connection failed ${attemptsInfo}: ${errorMessage}`, error);
+    
+    // If we've made many attempts, add more diagnostic info to the error
+    if (global.mongooseConnection.connectionAttempts >= 3) {
+      // If we keep failing after multiple attempts, throw a more descriptive error
+      throw new Error(`Database connection failed after ${global.mongooseConnection.connectionAttempts} attempts: ${errorMessage}`);
+    }
+    
     throw error;
   }
 }

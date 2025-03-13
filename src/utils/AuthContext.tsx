@@ -34,18 +34,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         });
         
         if (response.ok) {
-          const data = await response.json();
-          console.log('Auth check response:', data);
-          
-          if (data.success) {
-            setUser(data.data);
+          try {
+            const data = await response.json();
+            console.log('Auth check response:', data);
+            
+            if (data.success) {
+              setUser(data.data);
+            }
+          } catch (parseError) {
+            console.error('Error parsing auth check response:', parseError);
+            setUser(null);
           }
         } else {
           console.log('Auth check failed:', response.status);
           
-          // If API returns 401, user is not authenticated
-          if (response.status === 401) {
+          // If API returns 401, 403 or 500+, user is not authenticated
+          if (response.status === 401 || response.status === 403 || response.status >= 500) {
             setUser(null);
+            
+            // For server errors, log additional information
+            if (response.status >= 500) {
+              console.warn(`Server error during auth check: ${response.status} ${response.statusText}`);
+            }
           }
         }
       } catch (error) {
@@ -72,16 +82,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Login failed:', errorData);
-        throw new Error(errorData.message || 'Login failed');
+        // Safely parse response, handling cases where response might not be valid JSON
+        try {
+          const errorData = await response.json();
+          console.error('Login failed:', errorData);
+          throw new Error(errorData.message || `Login failed (${response.status})`);
+        } catch (parseError) {
+          // If we can't parse as JSON, use the status text or a generic message
+          console.error('Login failed with unparseable response:', response.statusText);
+          throw new Error(
+            response.status === 504 
+              ? 'Server timeout - database connection issue' 
+              : `Login failed (${response.status}: ${response.statusText})`
+          );
+        }
       }
 
-      const data = await response.json();
-      console.log('Login successful:', data);
+      // Safely parse the success response
+      let data;
+      try {
+        data = await response.json();
+        console.log('Login successful:', data);
 
-      setUser(data.data);
-      router.push('/dashboard');
+        setUser(data.data);
+        router.push('/dashboard');
+      } catch (parseError) {
+        console.error('Error parsing successful login response:', parseError);
+        throw new Error('Error processing login response');
+      }
     } catch (error: any) {
       console.error('Login error:', error);
       setError(error.message);
@@ -105,16 +133,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Signup failed:', errorData);
-        throw new Error(errorData.message || 'Signup failed');
+        // Safely parse response, handling cases where response might not be valid JSON
+        try {
+          const errorData = await response.json();
+          console.error('Signup failed:', errorData);
+          throw new Error(errorData.message || `Signup failed (${response.status})`);
+        } catch (parseError) {
+          // If we can't parse as JSON, use the status text or a generic message
+          console.error('Signup failed with unparseable response:', response.statusText);
+          throw new Error(
+            response.status === 504 
+              ? 'Server timeout - database connection issue' 
+              : `Signup failed (${response.status}: ${response.statusText})`
+          );
+        }
       }
 
-      const data = await response.json();
-      console.log('Signup successful:', data);
+      // Safely parse the success response
+      let data;
+      try {
+        data = await response.json();
+        console.log('Signup successful:', data);
 
-      setUser(data.data);
-      router.push('/dashboard');
+        setUser(data.data);
+        router.push('/dashboard');
+      } catch (parseError) {
+        console.error('Error parsing successful signup response:', parseError);
+        throw new Error('Error processing signup response');
+      }
     } catch (error: any) {
       console.error('Signup error:', error);
       setError(error.message);
