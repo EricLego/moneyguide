@@ -60,6 +60,7 @@ const Dashboard = () => {
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showDemoBanner, setShowDemoBanner] = useState(true);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -241,7 +242,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {sampleData && (
+        {sampleData && showDemoBanner && (
           <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 mb-6 rounded-md shadow-sm flex items-start" role="alert">
             <div className="p-1 bg-blue-100 rounded-md mr-3">
               <svg className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -258,7 +259,10 @@ const Dashboard = () => {
                 </svg>
               </Link>
             </div>
-            <button className="ml-auto text-blue-500 hover:text-blue-700">
+            <button
+              className="ml-auto text-blue-500 hover:text-blue-700"
+              onClick={() => setShowDemoBanner(false)}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>

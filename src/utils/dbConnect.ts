@@ -5,7 +5,7 @@ declare global {
   var mongooseConnection: {
     isConnected?: number;
     promise?: Promise<typeof mongoose>;
-    connectionAttempts?: number;
+    connectionAttempts: number;
   };
 }
 
