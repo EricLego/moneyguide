@@ -5,6 +5,26 @@ import { authenticateUser, AuthRequest } from '@/utils/auth';
 import { startOfMonth, subMonths, format, endOfMonth } from 'date-fns';
 
 async function handler(req: AuthRequest, res: NextApiResponse) {
+  // If demo user, return static data without hitting the database
+  if (req.user?.id === 'demo-user') {
+    const demoMonthlyStats = [
+      { month: 'Aug 2023', total: 950.25 },
+      { month: 'Sep 2023', total: 975.5 },
+      { month: 'Oct 2023', total: 1050.0 },
+      { month: 'Nov 2023', total: 1125.3 },
+      { month: 'Dec 2023', total: 1175.45 },
+      { month: 'Jan 2024', total: 1250.75 },
+    ];
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalMonthlyIncome: 1250.75,
+        monthlyStats: demoMonthlyStats,
+      },
+    });
+  }
+
   await dbConnect();
   
   const { method } = req;
