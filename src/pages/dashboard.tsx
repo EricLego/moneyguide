@@ -26,10 +26,16 @@ interface StatsData {
   monthlyStats: MonthlyIncome[];
 }
 
+interface ExpenseStats {
+  totalMonthlyExpense: number;
+  monthlyStats: MonthlyIncome[];
+}
+
 const Dashboard = () => {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [stats, setStats] = useState<StatsData | null>(null);
+  const [expenseStats, setExpenseStats] = useState<ExpenseStats | null>(null);
   const [events, setEvents] = useState<IncomeEvent[]>([
     // Default sample events for initial render
     { 
@@ -60,6 +66,7 @@ const Dashboard = () => {
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showDemoBanner, setShowDemoBanner] = useState(true);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -96,6 +103,24 @@ const Dashboard = () => {
     };
 
     fetchStats();
+  }, [user]);
+
+  // Fetch expense stats
+  useEffect(() => {
+    const fetchExpenseStats = async () => {
+      if (!user) return;
+
+      try {
+        const res = await fetch('/api/expenses/stats');
+        if (!res.ok) throw new Error('Failed to fetch expense stats');
+        const result = await res.json();
+        if (result.success) setExpenseStats(result.data);
+      } catch (err: any) {
+        console.error('Error fetching expense stats:', err);
+      }
+    };
+
+    fetchExpenseStats();
   }, [user]);
 
   // Fetch calendar events for current month
@@ -172,6 +197,7 @@ const Dashboard = () => {
 
   // Calculate sample data for demo if no real data exists
   const sampleData = !stats || stats.totalMonthlyIncome === 0;
+  const sampleExpenseData = !expenseStats || expenseStats.totalMonthlyExpense === 0;
   const displayIncome = sampleData ? 1250.75 : stats?.totalMonthlyIncome || 0;
   
   // Sample monthly stats if needed
@@ -182,6 +208,15 @@ const Dashboard = () => {
     { month: 'Nov 2023', total: 1125.30 },
     { month: 'Dec 2023', total: 1175.45 },
     { month: 'Jan 2024', total: 1250.75 }
+  ];
+
+  const sampleExpenseMonthlyStats = [
+    { month: 'Aug 2023', total: 400.12 },
+    { month: 'Sep 2023', total: 450.50 },
+    { month: 'Oct 2023', total: 475.90 },
+    { month: 'Nov 2023', total: 500.00 },
+    { month: 'Dec 2023', total: 520.30 },
+    { month: 'Jan 2024', total: 540.75 }
   ];
 
   return (
@@ -196,7 +231,7 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </span>
-                Passive Income Dashboard
+                Income & Spending Dashboard
               </h1>
               <p className="text-gray-600 text-lg">
                 Welcome back, <span className="font-medium">{user?.name}</span>! 
@@ -215,6 +250,12 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 Add Income
+              </Link>
+              <Link href="/expenses" className="btn-secondary flex items-center px-4 py-2 text-sm shadow-md hover:shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
+                </svg>
+                Add Expense
               </Link>
             </div>
           </div>
@@ -241,7 +282,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {sampleData && (
+        {sampleData && showDemoBanner && (
           <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 mb-6 rounded-md shadow-sm flex items-start" role="alert">
             <div className="p-1 bg-blue-100 rounded-md mr-3">
               <svg className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -258,7 +299,10 @@ const Dashboard = () => {
                 </svg>
               </Link>
             </div>
-            <button className="ml-auto text-blue-500 hover:text-blue-700">
+            <button
+              className="ml-auto text-blue-500 hover:text-blue-700"
+              onClick={() => setShowDemoBanner(false)}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -388,11 +432,81 @@ const Dashboard = () => {
         </div>
       </div>
 
+      <div className="grid md:grid-cols-2 gap-8 mb-14">
+        <div className="stat-card group hover:shadow-lg transition-all duration-300">
+          <div className="flex justify-between">
+            <div>
+              <div className="data-label mb-3 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                Total Monthly Expenses
+              </div>
+              {expenseStats ? (
+                <div className="data-value text-secondary group-hover:scale-105 origin-left transition-transform">
+                  ${sampleExpenseData ? 540.75 : expenseStats.totalMonthlyExpense.toFixed(2)}
+                  <span className="text-sm text-gray-500 font-normal ml-2">per month</span>
+                </div>
+              ) : (
+                <div className="animate-pulse h-10 bg-gray-200 rounded w-1/2"></div>
+              )}
+            </div>
+            <div className="h-20 w-20 rounded-full bg-secondary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+          </div>
+          <div className="mt-6 pt-4 border-t border-gray-100">
+            <Link href="/expenses" className="text-secondary hover:text-secondary/80 text-sm font-medium flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              Add new expense
+            </Link>
+          </div>
+        </div>
+
+        <div className="stat-card border-secondary group hover:shadow-lg transition-all duration-300">
+          <div className="flex justify-between">
+            <div>
+              <div className="data-label mb-3 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+                Expenses Recorded
+              </div>
+              {expenseStats ? (
+                <div className="data-value text-primary group-hover:scale-105 origin-left transition-transform">
+                  {sampleExpenseData ? 3 : expenseStats.monthlyStats?.length || 0}
+                  <span className="text-sm text-gray-500 font-normal ml-2">items</span>
+                </div>
+              ) : (
+                <div className="animate-pulse h-10 bg-gray-200 rounded w-1/2"></div>
+              )}
+            </div>
+            <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+          <div className="mt-6 pt-4 border-t border-gray-100">
+            <Link href="/expenses" className="text-primary hover:text-primary/80 text-sm font-medium flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+              View all expenses
+            </Link>
+          </div>
+        </div>
+      </div>
+
       <div className="card mb-14 p-10">
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-2xl font-semibold">Income Trends</h2>
-            <p className="text-gray-600 mt-1">See how your passive income has grown over time</p>
+            <p className="text-gray-600 mt-1">See how your income trends evolve over time</p>
           </div>
           <div className="flex items-center space-x-3">
             <div className="text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full flex items-center">

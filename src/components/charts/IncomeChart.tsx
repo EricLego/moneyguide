@@ -43,13 +43,22 @@ const IncomeChart: React.FC<IncomeChartProps> = ({ data, currency = 'USD' }) => 
   const amounts = data.map(item => item.total);
   const [growth, setGrowth] = useState<number>(0);
   
-  // Calculate growth percentage
+  // Calculate growth percentage, avoid division by zero
   useEffect(() => {
     if (amounts.length >= 2) {
       const oldest = amounts[0];
       const newest = amounts[amounts.length - 1];
-      const growthPercent = ((newest - oldest) / oldest) * 100;
-      setGrowth(growthPercent);
+
+      if (oldest === 0) {
+        // When the initial value is 0, growth is undefined
+        setGrowth(0);
+      } else {
+        const growthPercent = ((newest - oldest) / oldest) * 100;
+        setGrowth(growthPercent);
+      }
+    } else {
+      // Not enough data points, assume no growth
+      setGrowth(0);
     }
   }, [amounts]);
 
@@ -240,15 +249,15 @@ const IncomeChart: React.FC<IncomeChartProps> = ({ data, currency = 'USD' }) => 
       <div className="grid grid-cols-3 gap-2 mt-4 text-center text-xs">
         <div className="text-gray-500">
           <div className="font-medium mb-1">Lowest</div>
-          <div className="text-sm">{currency} {Math.min(...amounts).toFixed(2)}</div>
+          <div className="text-sm">{currency} {(amounts.length > 0 ? Math.min(...amounts) : 0).toFixed(2)}</div>
         </div>
         <div className="text-gray-500">
           <div className="font-medium mb-1">Average</div>
-          <div className="text-sm">{currency} {(amounts.reduce((a, b) => a + b, 0) / amounts.length).toFixed(2)}</div>
+          <div className="text-sm">{currency} {(amounts.length > 0 ? amounts.reduce((a, b) => a + b, 0) / amounts.length : 0).toFixed(2)}</div>
         </div>
         <div className="text-gray-500">
           <div className="font-medium mb-1">Highest</div>
-          <div className="text-sm">{currency} {Math.max(...amounts).toFixed(2)}</div>
+          <div className="text-sm">{currency} {(amounts.length > 0 ? Math.max(...amounts) : 0).toFixed(2)}</div>
         </div>
       </div>
     </div>

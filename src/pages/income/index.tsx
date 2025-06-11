@@ -131,7 +131,7 @@ const IncomePage = () => {
   }
 
   return (
-    <Layout title="Passive Income - MoneyGuide">
+    <Layout title="Income - MoneyGuide">
       <div className="section-spacing">
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-6 bg-gradient-to-r from-primary/5 to-secondary/5 p-8 rounded-xl shadow-sm border border-gray-100 mb-6">
           <div>
@@ -141,10 +141,10 @@ const IncomePage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </span>
-              Passive Income
+              Income
             </h1>
             <p className="text-gray-600 text-lg">
-              Manage all your passive income sources and track your financial growth over time.
+              Manage all your income sources and track your financial growth over time.
             </p>
           </div>
           <button 
@@ -195,7 +195,7 @@ const IncomePage = () => {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-2xl font-semibold">Your Income Sources</h2>
-            <p className="text-gray-600 mt-1">Track and manage all your passive income streams</p>
+            <p className="text-gray-600 mt-1">Track and manage all your income streams</p>
           </div>
           <div className="text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -312,7 +312,7 @@ const IncomePage = () => {
               </svg>
             </div>
             <p className="font-medium text-xl mb-2">No income sources found</p> 
-            <p className="text-lg mb-8">Add your first income source to start tracking your passive income progress.</p>
+            <p className="text-lg mb-8">Add your first income source to start tracking your income progress.</p>
             {!showForm && (
               <button 
                 onClick={() => setShowForm(true)} 
@@ -330,9 +330,9 @@ const IncomePage = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="font-medium text-gray-700">Why track passive income?</span>
+                <span className="font-medium text-gray-700">Why track your income?</span>
               </div>
-              <p className="text-gray-600">Passive income sources provide financial security and freedom over time. By tracking your progress here, you can visualize growth and make informed decisions about your financial future.</p>
+              <p className="text-gray-600">Monitoring your income provides financial security and freedom over time. By tracking your progress here, you can visualize growth and make informed decisions about your financial future.</p>
             </div>
           </div>
         )}
