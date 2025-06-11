@@ -5,9 +5,7 @@ import { authenticateUser, AuthRequest } from '@/utils/auth';
 import { startOfMonth, endOfMonth } from 'date-fns';
 
 async function handler(req: AuthRequest, res: NextApiResponse) {
-  await dbConnect();
-  
-  const { 
+  const {
     method,
     query: { month, year }
   } = req;
@@ -16,6 +14,44 @@ async function handler(req: AuthRequest, res: NextApiResponse) {
   if (!req.user) {
     return res.status(401).json({ success: false, message: 'Authentication required' });
   }
+
+  // Demo user returns static events without DB access
+  if (req.user.id === 'demo-user') {
+    const currentDate = new Date();
+    const targetMonth = month ? parseInt(month as string, 10) - 1 : currentDate.getMonth();
+    const targetYear = year ? parseInt(year as string, 10) : currentDate.getFullYear();
+
+    const sampleEvents = [
+      {
+        id: 'sample-1',
+        title: 'Dividend Income',
+        amount: 125.5,
+        currency: 'USD',
+        date: new Date(targetYear, targetMonth, 15),
+        frequency: 'monthly'
+      },
+      {
+        id: 'sample-2',
+        title: 'Rental Income',
+        amount: 875.0,
+        currency: 'USD',
+        date: new Date(targetYear, targetMonth, 1),
+        frequency: 'monthly'
+      },
+      {
+        id: 'sample-3',
+        title: 'Side Project',
+        amount: 250.25,
+        currency: 'USD',
+        date: new Date(targetYear, targetMonth, 22),
+        frequency: 'quarterly'
+      }
+    ];
+
+    return res.status(200).json({ success: true, data: sampleEvents });
+  }
+
+  await dbConnect();
 
   const userId = req.user.id;
 
