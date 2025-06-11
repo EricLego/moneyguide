@@ -43,13 +43,22 @@ const IncomeChart: React.FC<IncomeChartProps> = ({ data, currency = 'USD' }) => 
   const amounts = data.map(item => item.total);
   const [growth, setGrowth] = useState<number>(0);
   
-  // Calculate growth percentage
+  // Calculate growth percentage, avoid division by zero
   useEffect(() => {
     if (amounts.length >= 2) {
       const oldest = amounts[0];
       const newest = amounts[amounts.length - 1];
-      const growthPercent = ((newest - oldest) / oldest) * 100;
-      setGrowth(growthPercent);
+
+      if (oldest === 0) {
+        // When the initial value is 0, growth is undefined
+        setGrowth(0);
+      } else {
+        const growthPercent = ((newest - oldest) / oldest) * 100;
+        setGrowth(growthPercent);
+      }
+    } else {
+      // Not enough data points, assume no growth
+      setGrowth(0);
     }
   }, [amounts]);
 

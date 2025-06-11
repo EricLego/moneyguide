@@ -1,6 +1,6 @@
 # MoneyGuide
 
-MoneyGuide is a minimalistic financial dashboard web application that helps users monitor and manage their passive income streams. The app provides an intuitive interface for manually inputting income data, visualizing trends with charts and a calendar view, and offering a centralized overview of your financial situation.
+MoneyGuide is a minimalistic financial dashboard web application that helps users track their income and spending. The app provides an intuitive interface for manually inputting transactions, visualizing trends with charts and a calendar view, and offering a centralized overview of your financial situation.
 
 ## MVP Features
 
@@ -8,14 +8,14 @@ MoneyGuide is a minimalistic financial dashboard web application that helps user
   - Email/Password sign-up and login
   - Google OAuth for seamless registration
 
-- **Passive Income Dashboard:**
+- **Finance Dashboard:**
   - Manual entry of income sources with the following fields:
     - **Source:** Description of the income stream
     - **Amount:** The income value
     - **Frequency:** How often the income is received (e.g., weekly, monthly)
   - CRUD operations for managing income records
   - Data visualizations:
-    - **Line Chart:** Displaying total passive income trends over the past 6 months
+    - **Line Chart:** Displaying income trends over the past 6 months
     - **Calendar View:** Visualizing income events by date
 
 - **Future Enhancements:**
