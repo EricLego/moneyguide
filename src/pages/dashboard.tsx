@@ -60,6 +60,7 @@ const Dashboard = () => {
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showDemoBanner, setShowDemoBanner] = useState(true);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -196,7 +197,7 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </span>
-                Passive Income Dashboard
+                Income & Spending Dashboard
               </h1>
               <p className="text-gray-600 text-lg">
                 Welcome back, <span className="font-medium">{user?.name}</span>! 
@@ -215,6 +216,12 @@ const Dashboard = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 Add Income
+              </Link>
+              <Link href="/expenses" className="btn-secondary flex items-center px-4 py-2 text-sm shadow-md hover:shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
+                </svg>
+                Add Expense
               </Link>
             </div>
           </div>
@@ -241,7 +248,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {sampleData && (
+        {sampleData && showDemoBanner && (
           <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 mb-6 rounded-md shadow-sm flex items-start" role="alert">
             <div className="p-1 bg-blue-100 rounded-md mr-3">
               <svg className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -258,7 +265,10 @@ const Dashboard = () => {
                 </svg>
               </Link>
             </div>
-            <button className="ml-auto text-blue-500 hover:text-blue-700">
+            <button
+              className="ml-auto text-blue-500 hover:text-blue-700"
+              onClick={() => setShowDemoBanner(false)}
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -392,7 +402,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-2xl font-semibold">Income Trends</h2>
-            <p className="text-gray-600 mt-1">See how your passive income has grown over time</p>
+            <p className="text-gray-600 mt-1">See how your income trends evolve over time</p>
           </div>
           <div className="flex items-center space-x-3">
             <div className="text-sm bg-gray-100 text-gray-700 px-3 py-1.5 rounded-full flex items-center">
